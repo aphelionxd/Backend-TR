@@ -1,16 +1,16 @@
-// Importando o Zod
 const { z } = require('zod');
 
-// Definindo o validador com Zod
 const criarTarefaValidator = z.object({
   titulo: z.string().min(1, "Título é obrigatório"),
   descricao: z.string().optional(),
   dataEntrega: z.string().refine(val => !isNaN(Date.parse(val)), {
     message: 'Data de entrega inválida',
   }).optional(),
-  usuarioId: z.number().int(),
-  categoriaId: z.number().int(),
+  usuarioId: z.string().transform(val => parseInt(val, 10)),  // Converte para número
+  categoriaId: z.string().transform(val => parseInt(val, 10)),  // Converte para número
 });
+
+module.exports = { criarTarefaValidator };
 
 // Controlador para criar tarefa
 const criarTarefa = async (req, res) => {

@@ -3,31 +3,34 @@ const { z } = require('zod');
 const { criarTarefaValidator } = require('../validators/tarefaValidator');
 
 const criarTarefa = async (req, res) => {
-    try {
-      // Validando os dados com o Zod
-      const { titulo, descricao, dataEntrega, usuarioId, categoriaId } = criarTarefaValidator.parse(req.body);
-  
-      // Caso a dataEntrega esteja presente, converte para um objeto Date
-      const dataEntregaFormatada = dataEntrega ? new Date(dataEntrega) : null;
-  
-      // Cria a tarefa no banco de dados
-      const tarefa = await prisma.tarefa.create({
-        data: {
-          titulo,
-          descricao,
-          dataEntrega: dataEntregaFormatada,
-          usuarioId,
-          categoriaId
-        }
-      });
-  
-      // Retorna a tarefa criada
-      res.status(201).json(tarefa);
-    } catch (error) {
-      console.error(error); // Log para entender o erro
-      res.status(400).json({ error: error.message });
-    }
-  };
+  try {
+    // Verifica o conteúdo do corpo da requisição para diagnóstico
+    console.log(req.body); // Verifique os dados que estão chegando na requisição
+
+    // Validando os dados com o Zod
+    const { titulo, descricao, dataEntrega, usuarioId, categoriaId } = criarTarefaValidator.parse(req.body);
+
+    // Caso a dataEntrega esteja presente, converte para um objeto Date
+    const dataEntregaFormatada = dataEntrega ? new Date(dataEntrega) : null;
+
+    // Cria a tarefa no banco de dados
+    const tarefa = await prisma.tarefa.create({
+      data: {
+        titulo,
+        descricao,
+        dataEntrega: dataEntregaFormatada,
+        usuarioId,
+        categoriaId
+      }
+    });
+
+    // Retorna a tarefa criada
+    res.status(201).json(tarefa);
+  } catch (error) {
+    console.error(error); // Log para entender o erro
+    res.status(400).json({ error: error.message });
+  }
+};
 
 const listarTarefas = async (req, res) => {
   try {
